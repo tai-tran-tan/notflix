@@ -1,0 +1,16 @@
+{
+    "name": "video-player-backend",
+    "version": "1.0.0",
+    "description": "An Express.js backend for a video player.",
+    "main": "index.js",
+    "scripts": {
+        "dev": "nodemon index.js",
+        "start": "node index.js"
+    },
+    "dependencies": {
+        "cors": "^2.8.5",
+        "express": "^4.19.2",
+        "nanoid": "^5.1.5",
+        "nodemon": "^3.1.10"
+    }
+}
