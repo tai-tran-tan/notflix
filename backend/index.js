@@ -159,7 +159,8 @@ const initMovies = async () => {
                 length: 'N/A', // Video length would require a separate library to extract
                 lastUpdated: fs.statSync(moviePath).mtime,
                 subtitles: [],
-                originalFolderName: folderName // Store the original folder name for file path lookups
+                originalFolderName: folderName, // Store the original folder name for file path lookups
+                fileName: null
             };
 
             files.forEach(file => {
@@ -168,8 +169,9 @@ const initMovies = async () => {
                 // Find the video file
                 // Now includes '.mkv' in the list of supported video files
                 if (['.mp4', '.mov', '.mkv'].includes(fileExtension)) {
-                    movie.videoUrl = `/movies/${folderName}/${file}`;
+                    movie.videoUrl = `/movies/${movieId}`;
                     movie.videoExtension = fileExtension; // Store the extension
+                    movie.fileName = file
                 }
 
                 // Find the subtitle files
@@ -282,10 +284,11 @@ const readSubtitleFile = (filePath) => {
   };
 
 // Dynamic route to serve video files, with transcoding for MKV
-app.get('/movies/:folder/:file', (req, res) => {
-    const { folder, file } = req.params;
-    const filePath = path.join(MOVIE_DIRECTORY, folder, file);
-    const fileExtension = path.extname(file).toLowerCase();
+app.get('/movies/:mid', (req, res) => {
+    const { mid } = req.params;
+    const movie = movies.find(m => m.id === mid)
+    const filePath = path.join(MOVIE_DIRECTORY, movie.originalFolderName, movie.fileName);
+    const fileExtension = path.extname(movie.fileName).toLowerCase();
 
     if (!fs.existsSync(filePath)) {
         return res.status(404).send('File not found');
